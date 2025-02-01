@@ -1,6 +1,5 @@
 import flet as ft
 import pyrebase
-import os
 
 # #BE7C4D, #92140C, #353238,  #BE5A38, #C1B4AE - Cambiar colores
 
@@ -19,8 +18,6 @@ firebaseConfig = {
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 
-
-print(os.path.exists("assets/acomaf.png"))  # Reemplaza con el nombre de tu imagen
 
 class ProductPage(ft.View):
     def __init__(self, page, img_src, title, sub_title, rating):
@@ -75,14 +72,36 @@ class ProductPage(ft.View):
                                         ),
                                         ft.Container(
                                             margin=10,
-                                            on_click=self.close_product_page,
+                                            on_click=self.add_favorites,
                                             width=30, height=30, border_radius=10, bgcolor="black",
                                             content=ft.Icon(ft.icons.FAVORITE, color=self.color_book)
                                         )
 
                                     ]
+                                ),
+                                ft.Container(
+                                    bgcolor=ft.Colors.with_opacity(0.6, "black"),
+                                    expand=True,
+                                    padding=20,
+                                    alignment=ft.alignment.center_left,
+                                    margin=ft.margin.only(top=550),
+                                    shadow=ft.BoxShadow(
+                                        spread_radius=15, blur_radius=20,
+                                        color=ft.Colors.with_opacity(0.3, "black"),
+                                    ),
+                                    content = ft.Column(
+                                        spacing=2,
+                                        controls=[
+                                            ft.Text(self.title, size=30, weight="bold"),
+                                            ft.Text(self.sub_title, size=20, weight="bold"),
+                                            ft.Row([ft.Icon(ft.icons.STAR, color=self.color_book)],
+                                                   spacing=5)
+                                        ],
+                                    )
                                 )
+
                             ]
+
                         )
                     ]
                 )
@@ -95,7 +114,9 @@ class ProductPage(ft.View):
         self.page.views.pop()
         self.page.update()
 
-
+    def add_favorites(self,e):
+        self.page.views.pop()
+        self.page.update()
 
 class ProductBook(ft.Container):
     def __init__(self, page, img_src, title, sub_title, rating):
@@ -124,14 +145,14 @@ class ProductBook(ft.Container):
                 ft.Stack(controls=[
                     ft.Container(border_radius=10,
                                  on_click=self.show_container,
-                                 content=ft.Image(src=f"/assets/{self.img_src}.png", width=100,
-                                                  fit=ft.ImageFit.COVER, height=100)
+                                 content=ft.Image(src=f"assets/{self.img_src}.png", width=250,
+                                                  fit=ft.ImageFit.CONTAIN, height=200)
                                  ),
                     ft.Container(
                         width=60,
                         alignment=ft.alignment.center,
                         border_radius=ft.border_radius.only(top_left=10, bottom_right=10),
-                        bgcolor=ft.Colors.with_opacity(0.6, "black"),
+                        bgcolor=ft.Colors.with_opacity(0.6, "white"),
                         content=ft.Row(
                             spacing=5,
                             controls=[
@@ -144,7 +165,7 @@ class ProductBook(ft.Container):
                 ft.Text(value=self.sub_title, color="#BE5A38"),
                 ft.Row(alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                        controls=[
-                           ft.Container(content=ft.Icon(ft.icons.ADD, color="white"),
+                           ft.Container(content=ft.Icon(ft.Icons.ADD, color="white"),
                                         bgcolor=self.color_book,
                                         width=30,
                                         height=30,
@@ -162,14 +183,17 @@ class ProductBook(ft.Container):
     def add_favorites(self,e):
         pass
 
-
-
 class AppLibreria(ft.Container):
     def __init__(self, page):
         super().__init__()
         self.page = page
 
-        #Cambiar colores
+        # Establecer el tamaño de la ventana
+        self.page.window.width = 450  # Ancho de la ventana
+        self.page.window.height = 800  # Alto de la ventana
+        self.page.window.resizable = False  # Permitir redimensionar la ventana
+
+        # Cambiar colores
         self.color_book = "#B82132"
         self.bg_color = "#EEB4B3"
         self.nav_color = "#D2665A"
@@ -183,7 +207,9 @@ class AppLibreria(ft.Container):
 
         self.products=[
             ProductBook(self.page, "acomaf", "Una corte de Niebla y Furia", "Sarah J.Maas", "4.9"),
-            ProductBook(self.page, "acomaf", "Una corte de Niebla y Furia", "Sarah J.Maas", "4.9")
+            ProductBook(self.page, "euvucr", "Eráse una vez un corazón roto", "Stephanie Garber", "4.5"),
+            ProductBook(self.page, "crue", "El príncipe cruel", "Holly Black", "4.5"),
+            ProductBook(self.page, "caraval", "Caraval", "Stephanie Garber", "4.0"),
         ]
 
         self.grid_view = ft.GridView(
@@ -205,7 +231,7 @@ class AppLibreria(ft.Container):
 
                                                             ft.Text("Buscador", size=25, weight="bold"),
 
-                                                            ft.TextField(prefix_icon=ft.Icons.SEARCH, hint_text="WIT", border_radius=10,
+                                                            ft.TextField(prefix_icon=ft.Icons.SEARCH, hint_text="Buscador", border_radius=10,
                                                                          bgcolor=self.container_color, border_color="transparent",
                                                                          on_change=self.filtrar_libros),
 
@@ -228,6 +254,16 @@ class AppLibreria(ft.Container):
                                                                                 runs_count=2,
                                                                                 child_aspect_ratio=0.6,
                                                                                 controls=[
+                                                                                    ProductBook(self.page, "acomaf",
+                                                                                                "Una corte de Niebla y Furia",
+                                                                                                "Sarah J.Maas", "4.9"),
+                                                                                    ProductBook(self.page, "euvucr",
+                                                                                                "Eráse una vez un corazón roto",
+                                                                                                "Stephanie Garber",
+                                                                                                "4.5"),
+                                                                                    ProductBook(self.page, "crue",
+                                                                                                "El príncipe cruel",
+                                                                                                "Holly Black", "4.5"),
 
                                                                                 ]
                                                                             )
@@ -238,17 +274,36 @@ class AppLibreria(ft.Container):
                                                                                 runs_count=2,
                                                                                 child_aspect_ratio=0.6,
                                                                                 controls=[
+                                                                                    ProductBook(self.page, "acomaf",
+                                                                                                "Una corte de Niebla y Furia",
+                                                                                                "Sarah J.Maas", "4.9"),
+                                                                                    ProductBook(self.page, "euvucr",
+                                                                                                "Eráse una vez un corazón roto",
+                                                                                                "Stephanie Garber",
+                                                                                                "4.5"),
+                                                                                    ProductBook(self.page, "crue",
+                                                                                                "El príncipe cruel",
+                                                                                                "Holly Black", "4.5"),
 
                                                                                 ]
                                                                             )
                                                                         ),
                                                                         ft.Tab(
-                                                                            #Guarda las puntuaciones a los libros
-                                                                            text="Puntuaciones",
+                                                                            text="Histórico",
                                                                             content=ft.GridView(
                                                                                 runs_count=2,
                                                                                 child_aspect_ratio=0.6,
                                                                                 controls=[
+                                                                                    ProductBook(self.page, "acomaf",
+                                                                                                "Una corte de Niebla y Furia",
+                                                                                                "Sarah J.Maas", "4.9"),
+                                                                                    ProductBook(self.page, "euvucr",
+                                                                                                "Eráse una vez un corazón roto",
+                                                                                                "Stephanie Garber",
+                                                                                                "4.5"),
+                                                                                    ProductBook(self.page, "crue",
+                                                                                                "El príncipe cruel",
+                                                                                                "Holly Black", "4.5"),
 
                                                                                 ]
                                                                             )
@@ -302,7 +357,7 @@ class AppLibreria(ft.Container):
 
         self.selected = ft.Container(
             shape=ft.BoxShape.CIRCLE,
-            offset = ft.transform.Offset(-0.375, 0.62),
+            offset = ft.transform.Offset(-0.375, 0.66),
             bgcolor=self.nav_color,
             alignment=ft.alignment.center,
             margin=ft.margin.only(top=10),
@@ -330,8 +385,6 @@ class AppLibreria(ft.Container):
             )
         )
 
-
-
         self.page.add(
             ft.Column(expand=True,
                       controls=[
@@ -355,45 +408,54 @@ class AppLibreria(ft.Container):
         )
 
     def filtrar_libros(self, e):
-        pass
+        search_text = e.control.value.lower()
+        filteredProducts = [
+            product for product in self.products if search_text in product.title.lower() or product.sub_title.lower()
+        ]
+
+        self.grid_view.controls = filteredProducts
+        self.grid_view.update()
 
     def change_position(self, e):
         if e.control.data == "1":
-            self.selected.offset = ft.transform.Offset(-0.375, 0.62)
+            self.selected.offset = ft.transform.Offset(-0.375, 0.66)
             self.selected.content = ft.Icon(name=ft.Icons.HOME_FILLED, color=self.color_book)
-            self.container_1.offset = ft.transform.Offset(0, -2)
+            self.container_1.offset = ft.transform.Offset(0, 0)
             self.container_2.offset = ft.transform.Offset(-2, 0)
             self.container_3.offset = ft.transform.Offset(-2, 0)
             self.container_4.offset = ft.transform.Offset(-2, 0)
         if e.control.data == "2":
-            self.selected.offset = ft.transform.Offset(-0.125, 0.62)
+            self.selected.offset = ft.transform.Offset(-0.125, 0.66)
             self.selected.content = ft.Icon(name=ft.Icons.BOOK_ONLINE_OUTLINED, color=self.color_book)
             self.container_1.offset = ft.transform.Offset(-2, 0)
-            self.container_2.offset = ft.transform.Offset(0, -2)
+            self.container_2.offset = ft.transform.Offset(0, 0)
             self.container_3.offset = ft.transform.Offset(-2, 0)
             self.container_4.offset = ft.transform.Offset(-2, 0)
         if e.control.data == "3":
-            self.selected.offset = ft.transform.Offset(0.125, 0.62)
+            self.selected.offset = ft.transform.Offset(0.125, 0.66)
             self.selected.content = ft.Icon(name=ft.Icons.BOOK, color=self.color_book)
             self.container_1.offset = ft.transform.Offset(-2, 0)
             self.container_2.offset = ft.transform.Offset(-2, 0)
-            self.container_3.offset = ft.transform.Offset(0, -2)
+            self.container_3.offset = ft.transform.Offset(0, 0)
             self.container_4.offset = ft.transform.Offset(-2, 0)
         if e.control.data == "4":
-            self.selected.offset = ft.transform.Offset(0.375, 0.62)
+            self.selected.offset = ft.transform.Offset(0.375, 0.66)
             self.selected.content = ft.Icon(name=ft.Icons.FAVORITE, color=self.color_book)
             self.container_1.offset = ft.transform.Offset(-2, 0)
             self.container_2.offset = ft.transform.Offset(-2, 0)
             self.container_3.offset = ft.transform.Offset(-2, 0)
-            self.container_4.offset = ft.transform.Offset(0, -2)
+            self.container_4.offset = ft.transform.Offset(0, 0)
 
         self.page.update()
 
 # Mejorar el login, más bonito
 def main(page: ft.Page):
     # Configuración de la ventana
-    page.window.width = 400
-    page.window.height = 400
+
+    page.window.width = 450  # Ancho de la ventana
+    page.window.height = 800  # Alto de la ventana
+    page.window.resizable = False  # Permitir redimensionar la ventana
+
     page.theme_mode = ft.ThemeMode.LIGHT
     page.vertical_alignment = "center"
     page.horizontal_alignment = "center"
@@ -456,7 +518,7 @@ def main(page: ft.Page):
     snack_bar = ft.SnackBar(content=ft.Text(""))
 
     # Agregar elementos a la página
-    page.snack_bar = snack_bar
+    page.overlay.append(snack_bar)
     page.add(
         texto_login,
         usuario,
@@ -465,4 +527,4 @@ def main(page: ft.Page):
     )
 
 # Ejecutar la aplicación para web
-ft.app(target=main, view=ft.WEB_BROWSER, assets_dir="assets")
+ft.app(target=main, assets_dir="assets")
