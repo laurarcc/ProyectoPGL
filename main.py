@@ -1,8 +1,6 @@
 import flet as ft
 import pyrebase
 
-# #BE7C4D, #92140C, #353238,  #BE5A38, #C1B4AE - Cambiar colores
-
 # Configuración de Firebase
 firebaseConfig = {
     'apiKey': "AIzaSyC_GLuiC7AWd6iEy3NW6f1GsATvI3ylovA",
@@ -18,7 +16,7 @@ firebaseConfig = {
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 
-
+# Clase para poder ver el libro de otra manera distinta
 class ProductPage(ft.View):
     def __init__(self, page, img_src, title, sub_title, rating):
         super().__init__(
@@ -31,11 +29,11 @@ class ProductPage(ft.View):
         self.sub_title = sub_title
         self.rating = rating
 
-        # Cambiar colores
-        self.color_book = "#B82132"
-        self.bg_color = "#EEB4B3"
-        self.nav_color = "#D2665A"
-        self.container_color = "#D2665A"
+        # Colores
+        self.color_book = "#ECB390"
+        self.bg_color = "#F5EEDC"
+        self.nav_color = "#C0D8C0"
+        self.container_color = "#C0D8C0"
 
         self.build_view()
 
@@ -59,7 +57,7 @@ class ProductPage(ft.View):
                                     border_radius=20,
                                     # cambiar foto
                                     content=ft.Image(src=f"assets/{self.img_src}.png", fit=ft.ImageFit.COVER,
-                                                     width=350, height=400,),
+                                                     width=450, height=500,),
                                 ),
                                 ft.Row(
                                     alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -109,7 +107,6 @@ class ProductPage(ft.View):
         )
 
 
-
     def close_product_page(self,e):
         self.page.views.pop()
         self.page.update()
@@ -118,6 +115,7 @@ class ProductPage(ft.View):
         self.page.views.pop()
         self.page.update()
 
+# Clase para poder ver el libro
 class ProductBook(ft.Container):
     def __init__(self, page, img_src, title, sub_title, rating):
         super().__init__(
@@ -125,7 +123,7 @@ class ProductBook(ft.Container):
             width=150,
             height=150,
             border_radius=10,
-            bgcolor="#BE7C4D",
+            bgcolor="#ECB390",
             padding=10,
             margin=ft.margin.only(top=10)
         )
@@ -135,9 +133,12 @@ class ProductBook(ft.Container):
         self.title = title
         self.sub_title = sub_title
         self.rating = rating
-        self.color_book = "#B82132"
-        self.bg_color = "#EEB4B3"
-        self.container_color = "#D2665A"
+
+        # Colores
+        self.color_book = "#DD4A48"
+        self.bg_color = "#F5EEDC"
+        self.nav_color = "#C0D8C0"
+        self.container_color = "#C0D8C0"
 
         self.content = ft.Column(expand=True,
             spacing=0,
@@ -183,6 +184,7 @@ class ProductBook(ft.Container):
     def add_favorites(self,e):
         pass
 
+# Donde se desarrolla casi toda la app
 class AppLibreria(ft.Container):
     def __init__(self, page):
         super().__init__()
@@ -193,11 +195,11 @@ class AppLibreria(ft.Container):
         self.page.window.height = 800  # Alto de la ventana
         self.page.window.resizable = False  # Permitir redimensionar la ventana
 
-        # Cambiar colores
-        self.color_book = "#B82132"
-        self.bg_color = "#EEB4B3"
-        self.nav_color = "#D2665A"
-        self.container_color = "#D2665A"
+        # Colores
+        self.color_book = "#DD4A48"
+        self.bg_color = "#F5EEDC"
+        self.nav_color = "#AAC8A7"
+        self.container_color = "#AAC8A7"
 
         self.page.spacing = 5
         self.page.padding = 5
@@ -229,7 +231,7 @@ class AppLibreria(ft.Container):
                                                                            ft.Container(ft.Image(src="assets/icono.jpg", height=30, ), border_radius=5)
                                                                        ]),
 
-                                                            ft.Text("Buscador", size=25, weight="bold"),
+                                                            ft.Text("Libros pendientes", size=25, weight="bold"),
 
                                                             ft.TextField(prefix_icon=ft.Icons.SEARCH, hint_text="Buscador", border_radius=10,
                                                                          bgcolor=self.container_color, border_color="transparent",
@@ -314,44 +316,141 @@ class AppLibreria(ft.Container):
                                                             ])
                                         )
 
+        # Libros que no han gustado
         self.container_2 = ft.Container(expand=True,
                     offset = ft.transform.Offset(-2,0),
                     content = ft.Column(expand=True,
                                         alignment=ft.MainAxisAlignment.CENTER,
                                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                         controls=[
-                                            ft.Text("WIT", size=20),
+                                            ft.Text("¡Libros que fueron 1 estrellas!", size=20),
                                             ft.Container(alignment=ft.alignment.center,
-                                                         content=ft.Image(src="assets/icono.jpg",
-                                                                          fit=ft.ImageFit.CONTAIN, width=100),),
+                                                         content=ft.Image(src="assets/estrella.png",
+                                                                          fit=ft.ImageFit.CONTAIN, width=150),),
+                                            ft.Container(expand=True,
+                                                         content=ft.Tabs(
+                                                             selected_index=0,
+                                                             expand=True,
+                                                             indicator_color="transparent",
+                                                             label_color=self.color_book,
+
+                                                             tabs=[
+                                                                 ft.Tab(
+                                                                     content=ft.GridView(
+                                                                         runs_count=2,
+                                                                         child_aspect_ratio=0.6,
+                                                                         controls=[
+                                                                             ProductBook(self.page, "after",
+                                                                                         "After",
+                                                                                         "Anna Tod", "0.5"),
+                                                                             ProductBook(self.page, "seis_signos",
+                                                                                         "Los seis signos de la luz",
+                                                                                         "Susan Cooper",
+                                                                                         "2.0"),
+                                                                             ProductBook(self.page, "chocolate",
+                                                                                         "Como agua para chocolate",
+                                                                                         "Laura Esquivel", "1.5"),
+
+                                                                         ]
+                                                                     )
+                                                                 ),
+                                                             ]
+                                                         )
+                                                         )
                                         ])
+
                                         )
 
+        # Libros que te han gustado
         self.container_3 = ft.Container(expand=True,
                                         offset=ft.transform.Offset(-2, 0),
                                         content=ft.Column(expand=True,
                                                           alignment=ft.MainAxisAlignment.CENTER,
                                                           horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                                           controls=[
-                                                              ft.Text("WIT", size=20),
+                                                              ft.Text("¡Libros que fueron 5 estrellas!", size=20),
                                                               ft.Container(alignment=ft.alignment.center,
-                                                                           content=ft.Image(src="assets/icono.jpg",
+                                                                           content=ft.Image(src="assets/5-estrellas.png",
                                                                                             fit=ft.ImageFit.CONTAIN,
-                                                                                            width=120), ),
+                                                                                            width=150), ),
+                                                              ft.Container(expand=True,
+                                                                           content=ft.Tabs(
+                                                                               selected_index=0,
+                                                                               expand=True,
+                                                                               indicator_color="transparent",
+                                                                               label_color=self.color_book,
+
+                                                                               tabs=[
+                                                                                   ft.Tab(
+                                                                                       content=ft.GridView(
+                                                                                           runs_count=2,
+                                                                                           child_aspect_ratio=0.6,
+                                                                                           controls=[
+                                                                                               ProductBook(self.page,
+                                                                                                           "acomaf",
+                                                                                                           "Una corte de Niebla y Furia",
+                                                                                                           "Sarah J.Maas",
+                                                                                                           "5"),
+                                                                                               ProductBook(self.page,
+                                                                                                           "amor_verdadero",
+                                                                                                           "La maldición del amor verdadero",
+                                                                                                           "Stephanie Garber",
+                                                                                                           "5"),
+                                                                                               ProductBook(self.page,
+                                                                                                           "roja",
+                                                                                                           "Reina Roja",
+                                                                                                           "Juan Gómez-Jurado",
+                                                                                                           "5")
+                                                                                           ]
+                                                                                       )
+                                                                                   ),
+                                                                               ]
+                                                                           )
+                                                                           )
                                                           ])
                                         )
 
+        # Libros que estoy leyendo ahora
         self.container_4 = ft.Container(expand=True,
                                         offset=ft.transform.Offset(-2, 0),
                                         content=ft.Column(expand=True,
                                                           alignment=ft.MainAxisAlignment.CENTER,
                                                           horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                                           controls=[
-                                                              ft.Text("WIT", size=20),
+                                                              ft.Text("Libros que estás leyendo ahora", size=20),
                                                               ft.Container(alignment=ft.alignment.center,
                                                                            content=ft.Image(src="assets/icono.jpg",
                                                                                             fit=ft.ImageFit.CONTAIN,
                                                                                             width=120), ),
+                                                              ft.Container(expand=True,
+                                                                           content=ft.Tabs(
+                                                                               selected_index=0,
+                                                                               expand=True,
+                                                                               indicator_color="transparent",
+                                                                               label_color=self.color_book,
+
+                                                                               tabs=[
+                                                                                   ft.Tab(
+                                                                                       content=ft.GridView(
+                                                                                           runs_count=2,
+                                                                                           child_aspect_ratio=0.6,
+                                                                                           controls=[
+                                                                                               ProductBook(self.page,
+                                                                                                           "alas",
+                                                                                                           "Una corte de Alas y Ruina",
+                                                                                                           "Sarah J.Maas",
+                                                                                                           "¿?"),
+                                                                                               ProductBook(self.page,
+                                                                                                           "brujas",
+                                                                                                           "La sociedad secreta de las brujas rebeldes",
+                                                                                                           "Sangu Mandanna",
+                                                                                                           "¿?"),
+                                                                                           ]
+                                                                                       )
+                                                                                   ),
+                                                                               ]
+                                                                           )
+                                                                           )
                                                           ])
                                         )
 
@@ -448,13 +547,112 @@ class AppLibreria(ft.Container):
 
         self.page.update()
 
-# Mejorar el login, más bonito
-def main(page: ft.Page):
-    # Configuración de la ventana
+# Página que sirve para que el usuario se registre
+class regisPage(ft.Container):
+    def __init__(self, page):
+        super().__init__()
+        self.page = page
+        # Configuración de la ventana
+        page.window.width = 450  # Ancho de la ventana
+        page.window.height = 800  # Alto de la ventana
+        page.window.resizable = False  # Permitir redimensionar la ventana
+        page.bgcolor = "#C0D8C0"
 
+        page.theme_mode =ft.ThemeMode.LIGHT
+        page.vertical_alignment = "center"
+        page.horizontal_alignment = "center"
+
+        # SnackBar inicializado con contenido predeterminado
+        snack_bar = ft.SnackBar(content=ft.Text(""))
+
+        # Función de registrar usuario
+        def btn_regis(e):
+            try:
+                auth.create_user_with_email_and_password(usuario.value, contra.value)
+                usuario.value = ""
+                contra.value = ""
+                snack_bar.content = ft.Text("Register  Successful", color="white")
+                snack_bar.bgcolor = "green"
+                snack_bar.open = True
+
+            except:
+                snack_bar.content = ft.Text("Register Not Successful", color="white")
+                snack_bar.bgcolor = "red"
+                snack_bar.open = True
+
+            page.update()
+
+        def btn_login(e):
+            page.clean()
+            main(page)
+
+        usuario = ft.TextField(
+            label="Usuario",
+            border_color="#DD4A48",
+            color="#DD4A48",
+            width=400,
+        )
+
+        # Elementos de la UI
+        texto_registrar = ft.Text(
+            value="¿Eres nuevo? ¡Registrate ahora!",
+            size=40,
+            weight="bold",
+            color="#DD4A48",
+        )
+
+        texto_contra = ft.Text(
+            value="La contraseña tiene que tener un mínimo de 6 carácteres",
+            size=12,
+            weight="bold",
+            color="#DD4A48",
+        )
+
+        contra = ft.TextField(
+            label="Contraseña",
+            border_color="#DD4A48",
+            color="#DD4A48",
+            password=True,
+            can_reveal_password=True,
+            width=400,
+        )
+
+        boton_regis = ft.ElevatedButton(
+            text="Registrar cuenta",
+            color="#F5EEDC",
+            bgcolor="#DD4A48",
+            on_click=btn_regis,
+            width=200,
+        )
+
+        boton_login = ft.ElevatedButton(
+            text="Volver al login",
+            color="#F5EEDC",
+            bgcolor="#DD4A48",
+            on_click=btn_login,
+            width=200,
+        )
+
+
+        # Agregar elementos a la página
+        page.overlay.append(snack_bar)
+        page.add(
+            texto_registrar,
+            usuario,
+            texto_contra,
+            contra,
+            boton_regis,
+            boton_login,
+        )
+
+# El main donde se llama a la appLibreria y donde se logea el usuario y entra a la app directo
+def main(page: ft.Page):
+
+    # Configuración de la ventana
     page.window.width = 450  # Ancho de la ventana
     page.window.height = 800  # Alto de la ventana
     page.window.resizable = False  # Permitir redimensionar la ventana
+    page.bgcolor = "#C0D8C0"
 
     page.theme_mode = ft.ThemeMode.LIGHT
     page.vertical_alignment = "center"
@@ -480,27 +678,32 @@ def main(page: ft.Page):
 
         page.update()
 
+    def btn_regis(e):
+        page.clean()
+        regis = regisPage(page)
+        page.add(regis)
+
     # Elementos de la UI
     texto_login = ft.Text(
         value="Login",
         size=40,
         weight="bold",
-        color="#BE5A38",
+        color="#DD4A48",
     )
 
     usuario = ft.TextField(
         hint_text="Usuario",
         label="Usuario",
-        border_color="#BE5A38",
-        color="#353238",
+        border_color="#DD4A48",
+        color="#DD4A48",
         width=400,
     )
 
     contra = ft.TextField(
         hint_text="Contraseña",
         label="Contraseña",
-        border_color="#BE5A38",
-        color="#353238",
+        border_color="#DD4A48",
+        color="#DD4A48",
         password=True,
         can_reveal_password=True,
         width=400,
@@ -508,9 +711,17 @@ def main(page: ft.Page):
 
     boton_login = ft.ElevatedButton(
         text="Login",
-        color="white",
-        bgcolor="#BE5A38",
+        color="#F5EEDC",
+        bgcolor="#DD4A48",
         on_click=btn_login,
+        width=200,
+    )
+
+    boton_regis = ft.ElevatedButton(
+        text="Registrate aquí",
+        color="#F5EEDC",
+        bgcolor="#DD4A48",
+        on_click=btn_regis,
         width=200,
     )
 
@@ -524,7 +735,8 @@ def main(page: ft.Page):
         usuario,
         contra,
         boton_login,
+        boton_regis
     )
 
-# Ejecutar la aplicación para web
+# Ejecuta la app y el assets_dir es para que entre en la carpeta "assets"
 ft.app(target=main, assets_dir="assets")
