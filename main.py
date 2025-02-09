@@ -16,7 +16,7 @@ firebaseConfig = {
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 
-# Clase para poder ver el libro de otra manera distinta
+# Clase para poder ver el libro en la clase principal
 class ProductPage(ft.View):
     def __init__(self, page, img_src, title, sub_title, rating):
         super().__init__(
@@ -55,9 +55,8 @@ class ProductPage(ft.View):
                                 ft.Container(
                                     alignment=ft.alignment.center,
                                     border_radius=20,
-                                    # cambiar foto
                                     content=ft.Image(src=f"assets/{self.img_src}.png", fit=ft.ImageFit.COVER,
-                                                     width=450, height=500,),
+                                                     width=450, height=720,),
                                 ),
                                 ft.Row(
                                     alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -66,19 +65,19 @@ class ProductPage(ft.View):
                                             margin=10,
                                             on_click=self.close_product_page,
                                             width=30, height=30, border_radius=10, bgcolor="black",
-                                            content=ft.Icon(ft.icons.KEYBOARD_ARROW_LEFT, color=self.color_book)
+                                            content=ft.Icon(ft.Icons.KEYBOARD_ARROW_LEFT, color=self.color_book)
                                         ),
                                         ft.Container(
                                             margin=10,
                                             on_click=self.add_favorites,
                                             width=30, height=30, border_radius=10, bgcolor="black",
-                                            content=ft.Icon(ft.icons.FAVORITE, color=self.color_book)
+                                            content=ft.Icon(ft.Icons.FAVORITE, color=self.color_book)
                                         )
 
                                     ]
                                 ),
                                 ft.Container(
-                                    bgcolor=ft.Colors.with_opacity(0.6, "black"),
+                                    bgcolor=ft.Colors.with_opacity(0.6, "white"),
                                     expand=True,
                                     padding=20,
                                     alignment=ft.alignment.center_left,
@@ -92,7 +91,7 @@ class ProductPage(ft.View):
                                         controls=[
                                             ft.Text(self.title, size=30, weight="bold"),
                                             ft.Text(self.sub_title, size=20, weight="bold"),
-                                            ft.Row([ft.Icon(ft.icons.STAR, color=self.color_book)],
+                                            ft.Row([ft.Icon(ft.Icons.STAR, color=self.color_book)],
                                                    spacing=5)
                                         ],
                                     )
@@ -115,7 +114,7 @@ class ProductPage(ft.View):
         self.page.views.pop()
         self.page.update()
 
-# Clase para poder ver el libro
+# Clase para poder ver el libro en grande
 class ProductBook(ft.Container):
     def __init__(self, page, img_src, title, sub_title, rating):
         super().__init__(
@@ -184,15 +183,15 @@ class ProductBook(ft.Container):
     def add_favorites(self,e):
         pass
 
-# Donde se desarrolla casi toda la app
+# Clase principal
 class AppLibreria(ft.Container):
     def __init__(self, page):
         super().__init__()
         self.page = page
 
         # Establecer el tamaño de la ventana
-        self.page.window.width = 450  # Ancho de la ventana
-        self.page.window.height = 800  # Alto de la ventana
+        self.page.window.width = 450
+        self.page.window.height = 800
         self.page.window.resizable = False  # Permitir redimensionar la ventana
 
         # Colores
@@ -370,7 +369,7 @@ class AppLibreria(ft.Container):
                                                           controls=[
                                                               ft.Text("¡Libros que fueron 5 estrellas!", size=20),
                                                               ft.Container(alignment=ft.alignment.center,
-                                                                           content=ft.Image(src="assets/5-estrellas.png",
+                                                                           content=ft.Image(src="assets/estrella5.png",
                                                                                             fit=ft.ImageFit.CONTAIN,
                                                                                             width=150), ),
                                                               ft.Container(expand=True,
@@ -419,7 +418,7 @@ class AppLibreria(ft.Container):
                                                           controls=[
                                                               ft.Text("Libros que estás leyendo ahora", size=20),
                                                               ft.Container(alignment=ft.alignment.center,
-                                                                           content=ft.Image(src="assets/icono.jpg",
+                                                                           content=ft.Image(src="assets/librosinFondo.png",
                                                                                             fit=ft.ImageFit.CONTAIN,
                                                                                             width=120), ),
                                                               ft.Container(expand=True,
@@ -571,12 +570,12 @@ class regisPage(ft.Container):
                 auth.create_user_with_email_and_password(usuario.value, contra.value)
                 usuario.value = ""
                 contra.value = ""
-                snack_bar.content = ft.Text("Register  Successful", color="white")
+                snack_bar.content = ft.Text("Registro Exitoso", color="white")
                 snack_bar.bgcolor = "green"
                 snack_bar.open = True
 
             except:
-                snack_bar.content = ft.Text("Register Not Successful", color="white")
+                snack_bar.content = ft.Text("Registro no Exitoso", color="white")
                 snack_bar.bgcolor = "red"
                 snack_bar.open = True
 
@@ -626,7 +625,7 @@ class regisPage(ft.Container):
         )
 
         boton_login = ft.ElevatedButton(
-            text="Volver al login",
+            text="Volver a iniciar sesión",
             color="#F5EEDC",
             bgcolor="#DD4A48",
             on_click=btn_login,
@@ -645,12 +644,12 @@ class regisPage(ft.Container):
             boton_login,
         )
 
-# El main donde se llama a la appLibreria y donde se logea el usuario y entra a la app directo
+# El main donde se llama a la appLibreria y donde se loguea el usuario y entra a la app directo
 def main(page: ft.Page):
 
     # Configuración de la ventana
-    page.window.width = 450  # Ancho de la ventana
-    page.window.height = 800  # Alto de la ventana
+    page.window.width = 450
+    page.window.height = 800
     page.window.resizable = False  # Permitir redimensionar la ventana
     page.bgcolor = "#C0D8C0"
 
@@ -670,7 +669,7 @@ def main(page: ft.Page):
             page.add(app_libreria)
 
         except:
-            snack_bar.content = ft.Text("Login Not Successful", color="white")
+            snack_bar.content = ft.Text("Inicio de sesión no exitoso", color="white")
             snack_bar.bgcolor = "red"
             snack_bar.open = True
             usuario.value = ""
@@ -685,7 +684,7 @@ def main(page: ft.Page):
 
     # Elementos de la UI
     texto_login = ft.Text(
-        value="Login",
+        value="Iniciar Sesión",
         size=40,
         weight="bold",
         color="#DD4A48",
@@ -710,7 +709,7 @@ def main(page: ft.Page):
     )
 
     boton_login = ft.ElevatedButton(
-        text="Login",
+        text="Iniciar Sesión",
         color="#F5EEDC",
         bgcolor="#DD4A48",
         on_click=btn_login,
